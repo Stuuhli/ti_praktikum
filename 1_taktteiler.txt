@@ -1,0 +1,36 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity taktteiler is 
+
+
+	port (
+      clk         : in std_logic; --50 MHz
+		clk_10Hz		: out std_logic			
+		
+		);
+end entity taktteiler;
+
+architecture arch of taktteiler is
+
+signal counter : unsigned(21 downto 0);
+signal q_int : std_logic;
+
+
+begin
+
+	proc : process (clk)
+	begin
+		if (clk'event and clk = '1') then
+			counter <= counter + 1;
+			if (counter = "1001100010010110100000") then
+				counter <= "0000000000000000000000";
+				q_int <= not q_int;
+			end if;
+		end if;
+	end process proc;
+	
+	clk_10Hz <= q_int;
+
+end architecture arch;
