@@ -46,8 +46,9 @@ sort_control : process(clk, reset) is
 begin	
 	if (reset = '1') then
 		next_main_state <= idle;
-		motor_pwr <= '0';
-		weiche <= '0';
+		motor_pwr <= STP;
+		motor_dir <= FWD;
+		weiche <= WEG_K;
 
 	elsif rising_edge(clk) then
 		main_state <= next_main_state; -- z_reg
@@ -70,15 +71,17 @@ begin
 		case main_state is
 		
 			when idle => -- warte auf opt_sens hi
-				motor_pwr <= '0';
-				weiche <= '0';
+				motor_pwr <= STP;
+				motor_dir <= FWD;
+				weiche <= WEG_K;
 				if (opt_sens = '1') then
 					next_main_state <= teil_kommt;
 				end if;
 				
 			when teil_kommt =>
-				motor_pwr <= '1';
-				weiche <= '0';
+				motor_pwr <= RUN;
+				motor_dir <= FWD;
+				weiche <= WEG_K;
 				if (time_s >= TIME_WEG_K) then
 					next_main_state <= idle;
 				elsif (ind_sens = '1') then
@@ -86,8 +89,9 @@ begin
 				end if;
 				
 			when teil_ist_metall =>
-				motor_pwr <= '1';
-				weiche <= '1';
+				motor_pwr <= RUN;
+				motor_dir <= FWD;
+				weiche <= WEG_M;
 				if (time_s >= TIME_WEG_M) then
 					next_main_state <= idle;
 				end if;
